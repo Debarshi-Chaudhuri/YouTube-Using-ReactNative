@@ -58,11 +58,13 @@ const styles=StyleSheet.create({
         borderRadius:20,
         justifyContent:"center",
         alignItems:'center',
+        overflow:'hidden',
     },
     dot:{
         width:4,
         height:4,
         borderRadius:2,
+        overflow:'hidden',
         backgroundColor:'#a6a6a6',
         marginBottom:2,
     }
@@ -70,9 +72,9 @@ const styles=StyleSheet.create({
 
 
 const mapStateToProps=(store)=>{
-    return({
+    return {
         videos:store.videos
-    })
+    }
 }
 const mapDispatchToProps=(dispatch)=>{
     return bindActionCreators({
@@ -106,7 +108,7 @@ const Video=(props)=>{
                             <Text style={styles.videoText}>{props.video.snippet.title}</Text>
                             <Text style={styles.channelText} >{props.video.snippet.channelTitle}</Text>
                         </View>
-                        <TouchableNativeFeedback style={styles.moreInfoContainer}>
+                        <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('black', true)}>
                             <View style={styles.moreInfoContainer}>
                                 <View style={styles.dot}></View>
                                 <View style={styles.dot}></View>
