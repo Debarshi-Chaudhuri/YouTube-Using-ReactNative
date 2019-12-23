@@ -79,7 +79,7 @@ let count=0;
 
 const Video=(props)=>{
     const [icon,useIcon]=React.useState(`${loader}`);
-
+    console.log(props)
     //console.log(props.video.snippet.channelId)
     console.log(count++)
     React.useEffect(()=>{fetchChannelData(props.video.snippet.channelId).then(
@@ -94,7 +94,9 @@ const Video=(props)=>{
     )},[])
     
     return(
-        <TouchableNativeFeedback  onPress={()=>this.props.navigation.navigate('Player')}>
+        <TouchableNativeFeedback  onPress={()=>{props.navigation.navigate('Player',{
+            video:props.video,icon:icon
+        })}}>
             <View style={styles.imageContainer}  >
                 <Image source={{uri:props.video.snippet.thumbnails.high.url}} style={styles.image} />
                 
@@ -151,7 +153,7 @@ class Youtube extends React.Component{
     }
     
     renderList=({item})=>{
-        return(<Video video={item} />)
+        return(<Video video={item} navigation={this.props.navigation}/>)
     }
     
     render(){
