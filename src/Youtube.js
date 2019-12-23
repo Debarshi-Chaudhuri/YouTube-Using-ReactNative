@@ -1,7 +1,6 @@
 import React from 'react';
 import { View,StyleSheet,Text,FlatList,Image,TouchableNativeFeedback,TouchableOpacity } from "react-native";
 import  loader from "../assets/loader.gif";
-import YouTube from 'react-native-youtube';
 import { fetchHomeData,fetchChannelData } from "../apis/api";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -95,7 +94,7 @@ const Video=(props)=>{
     )},[])
     
     return(
-        <TouchableNativeFeedback  >
+        <TouchableNativeFeedback  onPress={()=>this.props.navigation.navigate('Player')}>
             <View style={styles.imageContainer}  >
                 <Image source={{uri:props.video.snippet.thumbnails.high.url}} style={styles.image} />
                 
