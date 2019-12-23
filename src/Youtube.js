@@ -1,5 +1,6 @@
 import React from 'react';
 import { View,StyleSheet,Text,FlatList,Image,TouchableNativeFeedback,TouchableOpacity } from "react-native";
+import  loader from "../assets/loader.gif";
 import YouTube from 'react-native-youtube';
 import { fetchHomeData,fetchChannelData } from "../apis/api";
 import { bindActionCreators } from "redux";
@@ -29,9 +30,9 @@ const styles=StyleSheet.create({
         flexDirection:'row',
     },
     icon:{
-        width:50,
-        height:50,
-        borderRadius:25
+        width:40,
+        height:40,
+        borderRadius:20
     },
     videoText:{
         display:'flex',
@@ -39,6 +40,8 @@ const styles=StyleSheet.create({
     },
     channelText:{
         fontWeight:'100',
+        fontSize:12,
+        paddingTop:2,
         color:'#999999'
     },
     videoTextContainer:{
@@ -53,45 +56,39 @@ const styles=StyleSheet.create({
         flexDirection:'column',
     },
     moreInfoContainer:{
-        width:40,
-        height:40,
-        borderRadius:20,
+        width:35,
+        height:35,
+        borderRadius:15,
         justifyContent:"center",
         alignItems:'center',
         overflow:'hidden',
+        marginLeft:15
     },
     dot:{
         width:4,
         height:4,
         borderRadius:2,
         overflow:'hidden',
-        backgroundColor:'#a6a6a6',
+        backgroundColor:'#6b6b6b',
         marginBottom:2,
     }
 })
 
 
-const mapStateToProps=(store)=>{
-    return {
-        videos:store.videos
-    }
-}
-const mapDispatchToProps=(dispatch)=>{
-    return bindActionCreators({
-        homepageLoad
-    },dispatch)
-}
 
+let count=0;
 
 const Video=(props)=>{
-    const [icon,useIcon]=React.useState('')
-    console.log(props.video.snippet.channelId)
+    const [icon,useIcon]=React.useState(`${loader}`);
+
+    //console.log(props.video.snippet.channelId)
+    console.log(count++)
     React.useEffect(()=>{fetchChannelData(props.video.snippet.channelId).then(
         (response)=>response.json()
     ).then(
         (json)=>{
-            console.log(json.items)
-            useIcon(json.items[0].snippet.thumbnails.default.url)
+            //console.log(json.items[0].snippet.thumbnails)
+            useIcon(json.items[0].snippet.thumbnails.high.url)
         }
     ).catch(
         (error)=>console.log(error)
@@ -100,54 +97,69 @@ const Video=(props)=>{
     return(
         <TouchableNativeFeedback  >
             <View style={styles.imageContainer}  >
-                <Image source={{uri:props.video.snippet.thumbnails.standard.url}} style={styles.image} />
+                <Image source={{uri:props.video.snippet.thumbnails.high.url}} style={styles.image} />
+                
                 <View style={styles.titleContainer}>
                     <Image source={{uri:icon}} style={styles.icon} />
+                    
                     <View style={styles.videoTextContainer}>
+                        
                         <View style={styles.videoTextHeader}>
                             <Text style={styles.videoText}>{props.video.snippet.title}</Text>
                             <Text style={styles.channelText} >{props.video.snippet.channelTitle}</Text>
                         </View>
-                        <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('black', true)}>
+                        
+                        <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('grey', true)}>
+                            
                             <View style={styles.moreInfoContainer}>
                                 <View style={styles.dot}></View>
                                 <View style={styles.dot}></View>
                                 <View style={styles.dot}></View>
                             </View>
+                        
                         </TouchableNativeFeedback>
+                    
                     </View>
+                
                 </View>
+            
             </View>
+        
         </TouchableNativeFeedback>
     )
 }
-
-class Youtube extends React.Component{
-    constructor(props){
-        super(props)
-        this.state={
-            videoList:[]
-        }
+const mapStateToProps=(store)=>{
+    return{
+        videos:store.videos
     }
+}
+const mapDispatchToProps=(dispatch)=>{
+    return bindActionCreators({
+        homepageLoad
+    },dispatch)
+}
+class Youtube extends React.Component{
     componentDidMount(){
         fetchHomeData().then(
             (response)=>response.json()
         ).then(
             (json)=>{
                 console.log(json)
-                this.setState({videoList:json.items})
+                this.props.homepageLoad(json.items)
         }).catch(
             (error)=>console.log(error)
         )
     }
+    
     renderList=({item})=>{
         return(<Video video={item} />)
     }
+    
     render(){
         return(
             <View style={styles.container}>
                 <FlatList
-                    data={this.state.videoList}
+                    data={this.props.videos}
                     keyExtractor={item=>item.id}
                     renderItem={this.renderList}
                 />
@@ -173,3 +185,5 @@ export default connect(mapStateToProps,mapDispatchToProps)(Youtube);
                         </View>
                         
                     </View>*/
+                    //
+                    // 
